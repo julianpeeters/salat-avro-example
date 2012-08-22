@@ -14,5 +14,7 @@ resolvers ++= Seq(
 libraryDependencies ++= Seq( 
   "org.scalatest" %% "scalatest" % "1.8" % "test", 
   "org.apache.avro" % "avro" % "1.5.1",
-  "com.novus" %% "salat-core" % "0.0.8"
+  "com.novus" %% "salat-core" % "1.9.0", 
+  "ch.qos.logback" % "logback-core" % "1.0.0",
+  "ch.qos.logback" % "logback-classic" % "1.0.0"  
 )
