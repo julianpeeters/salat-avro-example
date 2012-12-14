@@ -1,8 +1,0 @@
-
- {
-  "type": "record",
-  "name": "foobar",
-  "fields": [
-    {"name": "case", "type": "string"}
-   ]
-  }
