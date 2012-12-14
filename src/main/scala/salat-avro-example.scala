@@ -35,6 +35,7 @@ For salat-avro 'case class to avro' serialization we need to provide a record, t
 
   val objFromInMemory = grater[MyRecord].asObject(decoder)
     Console.println(objFromInMemory)
+    Console.println((myRecord == objFromInMemory).toString)
 
 /*-------------TO AND FROM DATAFILESTREAM------------------------------------------
 Like above (to a byte[] output stream) but this time to a file input/output stream (cannot be read by a datafilereader).
@@ -54,7 +55,7 @@ Like above (to a byte[] output stream) but this time to a file input/output stre
 //Deserialize from File: Read DataFileStream file and deserialize back to object    
   val objFromFileStream = grater[MyRecord].asObject(decoderFile) 
     Console.println(objFromFileStream)
-
+    Console.println((myRecord == objFromFileStream).toString)
 
 /*-------------TO AND FROM AVRO DATAFILE------------------------------------------
 In order to write avro files we need to provide a schema  (obtained from a salat method acting on the record Case Class), a file destination path, and a record. To deserialize from file we will need to provide an infile path
@@ -70,6 +71,6 @@ In order to write avro files we need to provide a schema  (obtained from a salat
 //Deserialize from File: Read DataFile and deserialize back to object 
   val objFromFile = grater[MyRecord].asObjectFromDataFile(infile)  
     Console.println(objFromFile)
-
+    Console.println((myRecord == objFromFile).toString)
 }
 
