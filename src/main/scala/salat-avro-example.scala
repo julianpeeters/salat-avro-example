@@ -26,11 +26,11 @@ import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.io.BufferedInputStream
+import java.io.BufferedInputStream///////////////////////////////////////////////////////////////////TODO take this out?
 import org.apache.avro._
 import org.apache.avro.io._
 import org.apache.avro.file._
-import scala.util._
+import scala.util._                                                                      //TODO take this out? 
 
 object Main extends App {
 
@@ -38,8 +38,8 @@ object Main extends App {
   val myRecord2 = MyRecord("Achilles", 4, true)
   val myRecord3 = MyRecord("Escher", 6, true)
 
-  val myRecords = Stream[MyRecord](myRecord1, myRecord2, myRecord3)
-    Console.println("original records:" + myRecords.print)
+  val myRecordStream = Stream[MyRecord](myRecord1, myRecord2, myRecord3)
+    Console.println("Original Records: " + myRecordStream.toList)
 
 /*------------------IN-MEMORY DATA SERIALIZATION------------------------
 For salat-avro 'case class to avro' serialization we need to provide a record, the record Case Class, and an encoder, and a decoder and record Case Class to deserialize back into the scala object of the case class. 
@@ -48,30 +48,31 @@ For salat-avro 'case class to avro' serialization we need to provide a record, t
 //Serialize to an in-memory output stream:  
   val baos = new ByteArrayOutputStream
   val binaryEncoder = EncoderFactory.get().binaryEncoder(baos, null)
-  myRecords.foreach(i => grater[MyRecord].serialize(i, binaryEncoder))
+  myRecordStream.foreach(i => grater[MyRecord].serialize(i, binaryEncoder))
     //Console.println("Serialized Records into a BAOS: " + baos)
 
 //Deserialize back to object:
   val bytes = baos.toByteArray()
   val decoder = DecoderFactory.get().binaryDecoder(bytes, null)
 
-  def objStream: Stream[MyRecord] = {            
+  def objStreamFromInMemory: Stream[MyRecord] = {      // Define as a def so as to not eat memory by holding onto the head      
     if (decoder.isEnd() == true) Stream.empty
-    else cons(grater[MyRecord].asObject(decoder), objStream)  //The salat-avro grater is here in the stream def
-  }                                                            
+    else cons(grater[MyRecord].asObject(decoder), objStreamFromInMemory)  //The salat-avro grater is here in the stream def
+  }
 
-  Console.println("All Elements Correspond?: " + objStream.corresponds[MyRecord](myRecords)((i, j) => (i == j)))
+  Console.println("All Records Correspond?: " + objStreamFromInMemory.corresponds[MyRecord](myRecordStream)((i, j) => (i == j)))
 
-
+/*
 /*-------------TO AND FROM DATAFILESTREAM------------------------------------------
 Like above (to a byte[] output stream) but this time to a file input/output stream (cannot be read by a datafilereader).
 */
-/*
+
 //Serialize to a filestream
   val outfileStream = new File("/home/julianpeeters/output.stream")
   val fos = new FileOutputStream(outfileStream)
   val encoderFile = EncoderFactory.get().binaryEncoder(fos, null)
-  val afo = grater[MyRecord].serialize(myRecord, encoderFile)
+
+  myRecords.foreach(i => grater[MyRecord].serialize(i, encoderFile))
 
 
 //Deserialize from File: Read DataFileStream file and deserialize back to object
@@ -79,19 +80,28 @@ Like above (to a byte[] output stream) but this time to a file input/output stre
   val fis = new FileInputStream(infileStream)
   val decoderFile = DecoderFactory.get().binaryDecoder(fis, null)
 
-  val objFromFileStream = grater[MyRecord].asObject(decoderFile) 
-    Console.println("from FileStream: " + objFromFileStream)
-    Console.println("equal to the original?: " + (myRecord == objFromFileStream).toString)
+  def objFromFileStream: Stream[MyRecord] = {
+    if (decoderFile.isEnd() == true) Stream.empty
+    else cons(grater[MyRecord].asObject(decoderFile), objFromFileStream) 
+  }
+  
+  val deserializedFromFilestream = objFromFileStream
+    Console.println("Deserialized Recs: " + deserializedFromFilestream)
+    Console.println("Stream Equal to Original?: " + (myRecords == deserializedFromFilestream))
+    Console.println("All Records Correspond?: " + deserializedFromFilestream.corresponds[MyRecord](myRecords)((i, j) => (i == j)))
 
+*/
 
+/*
 /*-------------TO AND FROM AVRO DATAFILE------------------------------------------
-In order to write avro files we need to provide a schema  (obtained from a salat method acting on the record Case Class), a file destination path, and a record. To deserialize from file we will need to provide an infile path
+In order to write avro files that can be read by an avro datafilereader, we need to provide a schema  (obtained from a salat method acting on the record Case Class), a file destination path, and a record. To deserialize from file we will need to provide an infile path
 */
   
 //Serialize to an Avro DataFile
   val schema: Schema = grater[MyRecord].asAvroSchema
   val outfile = new File("/home/julianpeeters/output.avro")
-  val avro = grater[MyRecord].serializeToDataFile(schema, outfile, myRecord)
+
+  grater[MyRecord].serializeToDataFile(schema, outfile, myRecords)
 
 //Deserialize from File: Read DataFile and deserialize back to object 
   val infile = new File("/home/julianpeeters/input.avro")

@@ -19,9 +19,9 @@ resolvers += Resolver.file("Local Ivy Repository", file("/home/julianpeeters/.iv
 
 libraryDependencies ++= Seq( 
   "org.scalatest" %% "scalatest" % "1.8" % "test",
-  "org.ow2.asm" % "asm-util" % "4.1", 
+  //"org.ow2.asm" % "asm-util" % "4.1", 
   "org.apache.avro" % "avro" % "1.7.1",
-  "com.banno.salat.avro" %% "salat-avro" % "0.0.8-157-SNAPSHOT",
+  "com.banno.salat.avro" %% "salat-avro" % "0.0.7.2-1-SNAPSHOT",
   "com.novus" %% "salat-util" % "1.9.1"
  // "ch.qos.logback" % "logback-core" % "1.0.0",   //for use with scalaVersion 2.8.1
  // "ch.qos.logback" % "logback-classic" % "1.0.0" //for use with scalaVersion 2.8.1
