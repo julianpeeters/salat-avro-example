@@ -3,3 +3,5 @@ exit
 run
 exit
 inspect test:full-classpath
+~run
+exit

@@ -48,7 +48,7 @@ For salat-avro 'case class to avro' serialization we need to provide a record, t
   val baos = new ByteArrayOutputStream
   val binaryEncoder = EncoderFactory.get().binaryEncoder(baos, null)
 
-  val dbo = grater[MyRecord].serialize(myRecord, binaryEncoder)
+  grater[MyRecord].serialize(myRecord, binaryEncoder)
     
 //Deserialize back to object:
   val bytes = baos.toByteArray() 
@@ -57,7 +57,7 @@ For salat-avro 'case class to avro' serialization we need to provide a record, t
 
   val objFromInMemory = grater[MyRecord].asObject(decoder)
     Console.println("from memory: " + objFromInMemory)
-    Console.println("equal to original?: " + (myRecord == objFromInMemory).toString)
+    Console.println("equal to original?: " + (myRecord == objFromInMemory))
 
 /*-------------TO AND FROM DATAFILESTREAM------------------------------------------
 Like above (to a byte[] output stream) but this time to a file input/output stream (cannot be read by a datafilereader).
@@ -77,7 +77,7 @@ Like above (to a byte[] output stream) but this time to a file input/output stre
 
   val objFromFileStream = grater[MyRecord].asObject(decoderFile) 
     Console.println("from FileStream: " + objFromFileStream)
-    Console.println("equal to the original?: " + (myRecord == objFromFileStream).toString)
+    Console.println("equal to the original?: " + (myRecord == objFromFileStream))
 
 
 /*-------------TO AND FROM AVRO DATAFILE------------------------------------------
@@ -93,6 +93,6 @@ In order to write avro files we need to provide a schema  (obtained from a salat
   val infile = new File("/home/julianpeeters/input.avro")
   val objFromFile = grater[MyRecord].asObjectFromDataFile(infile)  
     Console.println("from Avro DataFile: " + objFromFile)
-    Console.println("equals orginal?: " + (myRecord == objFromFile).toString)
+    Console.println("equals orginal?: " + (myRecord == objFromFile))
 
 }
