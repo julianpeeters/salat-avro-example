@@ -1,6 +1,3 @@
-/*Taking salat and avro for a test run, and adding , writing binary avros to a binary output stream in-memory, as well as writing to an avro datafilestream, and finally, writing to an avro datafile (written with an avro DataFileWriter, and to be read by avro DataFileReaders). -- Julian Peeters Dec. 2012
-*/
-
 /*
  * Copyright 2011 T8 Webware
  *   
@@ -20,7 +17,7 @@
 import models._
 import com.banno.salat.avro._
 import global._
-import java.io.ByteArrayOutputStream
+import java.io.File
 import org.apache.avro._
 import org.apache.avro.io._
 import org.apache.avro.file._
@@ -28,30 +25,26 @@ import org.apache.avro.file._
 object Main extends App {
 
 
-  val myName = "Hello"
+  val myName = "Julian"
   val myInt = 4
   val myBool = true 
 
   val myRecord = MyRecord(myName, myInt, myBool)
     Console.println("original record:" + myRecord)
 
-/*------------------IN-MEMORY DATA SERIALIZATION------------------------
-For salat-avro 'case class to avro' serialization we need to provide a record, the record Case Class, and an encoder, and a decoder and record Case Class to deserialize back into the scala object of the case class. 
+
+/*-------------TO AND FROM AVRO DATAFILE------------------------------------------
+In order to write avro files, you will need to provide the record model(in this case 'MyRecord'), a destination file, and a record. To deserialize from an avro datafile we will need to provide the record model, and an infile.
 */
+  
+//Serialize to an Avro DataFile
+  val outfile = new File("/home/julianpeeters/output.avro")
 
-//Serialize to an in-memory output stream:  
-  val baos = new ByteArrayOutputStream
-  val binaryEncoder = EncoderFactory.get().binaryEncoder(baos, null)
+  grater[MyRecord].serializeToDataFile(outfile, myRecord)
 
-  grater[MyRecord].serialize(myRecord, binaryEncoder)
-    
-//Deserialize back to object:
-  val bytes = baos.toByteArray() 
-
-  val decoder = DecoderFactory.get().binaryDecoder(bytes, null)
-
-  val objFromInMemory = grater[MyRecord].asObject(decoder)
-    Console.println("from memory: " + objFromInMemory)
-    Console.println("equal to original?: " + (myRecord == objFromInMemory))
-
+//Deserialize from File: Read DataFile and deserialize back to object 
+  val infile = new File("/home/julianpeeters/input.avro")
+  val objFromFile = grater[MyRecord].asObjectFromDataFile(infile)  
+    Console.println("from Avro DataFile: " + objFromFile)
+    Console.println("equals orginal?: " + (myRecord == objFromFile).toString)
 }

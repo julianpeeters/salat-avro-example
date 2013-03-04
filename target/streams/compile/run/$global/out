@@ -1,7 +1,6 @@
 [0m[[0minfo[0m] [0mRunning Main [0m
 [0m[[0mdebug[0m] [0mStarting sandboxed run...[0m
 [0m[[0mdebug[0m] [0mWaiting for threads to exit or System.exit to be called.[0m
-[0m[[0mdebug[0m] [0mWaiting for thread run-main to exit[0m
 [0m[[0mdebug[0m] [0m  Classpath:[0m
 [0m[[0mdebug[0m] [0m	/home/julianpeeters/salat-avro-example/target/scala-2.9.1/classes[0m
 [0m[[0mdebug[0m] [0m	/home/julianpeeters/salat-avro-example/lib/asm-all-4.1.jar[0m
@@ -16,7 +15,7 @@
 [0m[[0mdebug[0m] [0m	/home/julianpeeters/.ivy2/cache/com.thoughtworks.paranamer/paranamer/jars/paranamer-2.3.jar[0m
 [0m[[0mdebug[0m] [0m	/home/julianpeeters/.ivy2/cache/org.xerial.snappy/snappy-java/bundles/snappy-java-1.0.4.1.jar[0m
 [0m[[0mdebug[0m] [0m	/home/julianpeeters/.ivy2/cache/org.slf4j/slf4j-api/jars/slf4j-api-1.6.4.jar[0m
-[0m[[0mdebug[0m] [0m	/home/julianpeeters/.ivy2/local/com.banno.salat.avro/salat-avro_2.9.1/0.0.8-157-SNAPSHOT/jars/salat-avro_2.9.1.jar[0m
+[0m[[0mdebug[0m] [0m	/home/julianpeeters/.ivy2/local/com.banno.salat.avro/salat-avro_2.9.1/0.0.7.2-2-SNAPSHOT/jars/salat-avro_2.9.1.jar[0m
 [0m[[0mdebug[0m] [0m	/home/julianpeeters/.ivy2/cache/com.novus/salat-core_2.9.0-1/jars/salat-core_2.9.0-1-0.0.8-SNAPSHOT.jar[0m
 [0m[[0mdebug[0m] [0m	/home/julianpeeters/.ivy2/cache/com.novus/salat-util_2.9.0-1/jars/salat-util_2.9.0-1-0.0.8-SNAPSHOT.jar[0m
 [0m[[0mdebug[0m] [0m	/home/julianpeeters/.ivy2/cache/org.slf4j/slf4j-simple/jars/slf4j-simple-1.6.1.jar[0m
@@ -30,6 +29,7 @@
 [0m[[0mdebug[0m] [0m	/home/julianpeeters/.ivy2/cache/com.mongodb.casbah/casbah-query_2.9.0-1/jars/casbah-query_2.9.0-1-2.1.5.0.jar[0m
 [0m[[0mdebug[0m] [0m	/home/julianpeeters/.ivy2/cache/com.novus/salat-util_2.9.1/jars/salat-util_2.9.1-1.9.1.jar[0m
 [0m[[0mdebug[0m] [0m	/home/julianpeeters/.ivy2/cache/org.scala-lang/scalap/jars/scalap-2.9.1.jar[0m
+[0m[[0mdebug[0m] [0mWaiting for thread run-main to exit[0m
 [0m[[0mdebug[0m] [0m	Thread run-main exited.[0m
 [0m[[0mdebug[0m] [0mInterrupting remaining threads (should be all daemons).[0m
 [0m[[0mdebug[0m] [0mSandboxed run complete..[0m
