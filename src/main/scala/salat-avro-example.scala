@@ -20,38 +20,43 @@
 import models._
 import com.banno.salat.avro._
 import global._
-import java.io.ByteArrayOutputStream
+import java.io.File
 import org.apache.avro._
 import org.apache.avro.io._
 import org.apache.avro.file._
+import org.apache.avro.generic._
 
 object Main extends App {
 
+  val myRecord1 = MyRecord("Tortoise", 2, true)
+  val myRecord2 = MyRecord("Achilles", 4, true)
+  val myRecord3 = MyRecord("Escher", 6, true)
 
-  val myName = "Hello"
-  val myInt = 4
-  val myBool = true 
+  val myRecordStream = Stream[MyRecord](myRecord1, myRecord2, myRecord3)
+    Console.println("Original Records: " + myRecordStream.toList)
 
-  val myRecord = MyRecord(myName, myInt, myBool)
-    Console.println("original record:" + myRecord)
-
-/*------------------IN-MEMORY DATA SERIALIZATION------------------------
-For salat-avro 'case class to avro' serialization we need to provide a record, the record Case Class, and an encoder, and a decoder and record Case Class to deserialize back into the scala object of the case class. 
+/*-------------TO AND FROM AVRO DATAFILE------------------------------------------
+In order to stream records to an avro file that can be read by an avro datafilereader, we need to provide record model, a schema  (obtained from a salat method acting on the record model), a destination file, and a stream of records. To deserialize from file we will need to provide an infile, and use the grater's DataFileReader and DatumReader.
 */
 
-//Serialize to an in-memory output stream:  
-  val baos = new ByteArrayOutputStream
-  val binaryEncoder = EncoderFactory.get().binaryEncoder(baos, null)
+//Serialize to an Avro DataFile
+  val schema: Schema = grater[MyRecord].asAvroSchema
+  val outfile = new File("/home/julianpeeters/streamOut.avro")
+  val avroDataFileWriter = grater[MyRecord].asDataFileWriter
 
-  grater[MyRecord].serialize(myRecord, binaryEncoder)
-    
-//Deserialize back to object:
-  val bytes = baos.toByteArray() 
+  avroDataFileWriter.create(schema, outfile)  
+  myRecordStream.foreach (i => avroDataFileWriter.append(i))
+  avroDataFileWriter.close
 
-  val decoder = DecoderFactory.get().binaryDecoder(bytes, null)
+//Deserialize from File: Read DataFile and deserialize back to object 
+  val streamInfile = new File("/home/julianpeeters/streamIn.avro")
+  val avroDataFileReader = grater[MyRecord].asDataFileReader(streamInfile)
+  val avroDatumReader = grater[MyRecord].asGenericDatumReader
 
-  val objFromInMemory = grater[MyRecord].asObject(decoder)
-    Console.println("from memory: " + objFromInMemory)
-    Console.println("equal to original?: " + (myRecord == objFromInMemory))
+  def objStreamFromFile: Stream[models.MyRecord] = {
+    if (avroDataFileReader.hasNext !=true) Stream.empty
+    else Stream.cons(avroDatumReader.applyValues((avroDataFileReader.next().asInstanceOf[GenericData.Record])).asInstanceOf[models.MyRecord], objStreamFromFile)
+  }
 
+  Console.println("All Records From Avro Data File Correspond To The Originals?: " + objStreamFromFile.corresponds[MyRecord](myRecordStream)((i, j) => (i == j)))
 }
