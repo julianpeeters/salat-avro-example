@@ -1,8 +1,5 @@
-/*Taking salat and avro for a test run, and adding , writing binary avros to a binary output stream in-memory, as well as writing to an avro datafilestream, and finally, writing to an avro datafile (written with an avro DataFileWriter, and to be read by avro DataFileReaders). -- Julian Peeters Dec. 2012
-*/
-
 /*
- * Copyright 2011 T8 Webware
+ * Copyright 2013 Julian Peeters
  *   
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,31 +29,25 @@ object Main extends App {
   val myRecord2 = MyRecord("Achilles", 4, true)
   val myRecord3 = MyRecord("Escher", 6, true)
 
-  val myRecordStream = Stream[MyRecord](myRecord1, myRecord2, myRecord3)
-    Console.println("Original Records: " + myRecordStream.toList)
+  val myRecordIterator = Iterator[MyRecord](myRecord1, myRecord2, myRecord3)
+/*
+In this example, we'll need to show that both pre-serialized and deserialized records are equal.  But normally the iterator is consumed upon serialation, leaving us nothing to compare to the deserialized result.  To solve this, we'll make a copy of the iterator, serializing myRecordIterator1 and leaving myRecordIterator2 for use in comparison.  A `Stream` can always be had from an `Iterator` if immutability is desired, at the possible risk of memory issues for large files(?).
+*/
 
-/*-------------TO AND FROM AVRO DATAFILE------------------------------------------
-In order to stream records to an avro file that can be read by an avro datafilereader, we need to provide record model, a schema  (obtained from a salat method acting on the record model), a destination file, and a stream of records. To deserialize from file we will need to provide an infile, and use the grater's DataFileReader and DatumReader.
+  val(myRecordIterator1, myRecordIterator2) = myRecordIterator.duplicate
+
+/*-------------STREAM RECORDS TO AND FROM AVRO DATAFILE------------------------------------------
+In order to stream records to an avro file that can be read by an avro datafilereader, we need to provide record model, a destination file, and a stream of records. `serializeIteratorToDataFile` appends indiscriminately.  If there is no file, a file is created.  To deserialize from file we will need to provide an infile.
 */
 
 //Serialize to an Avro DataFile
-  val schema: Schema = grater[MyRecord].asAvroSchema
-  val outfile = new File("/home/julianpeeters/streamOut.avro")
-  val avroDataFileWriter = grater[MyRecord].asDataFileWriter
-
-  avroDataFileWriter.create(schema, outfile)  
-  myRecordStream.foreach (i => avroDataFileWriter.append(i))
-  avroDataFileWriter.close
+  val outfile = new File("/home/julianpeeters/streamOut1.avro")
+  grater[MyRecord].serializeIteratorToDataFile(outfile, myRecordIterator1)
 
 //Deserialize from File: Read DataFile and deserialize back to object 
   val streamInfile = new File("/home/julianpeeters/streamIn.avro")
-  val avroDataFileReader = grater[MyRecord].asDataFileReader(streamInfile)
-  val avroDatumReader = grater[MyRecord].asGenericDatumReader
+  val sameRecordIterator = grater[MyRecord].asObjectIteratorFromDataFile(streamInfile)
 
-  def objStreamFromFile: Stream[models.MyRecord] = {
-    if (avroDataFileReader.hasNext !=true) Stream.empty
-    else Stream.cons(avroDatumReader.applyValues((avroDataFileReader.next().asInstanceOf[GenericData.Record])).asInstanceOf[models.MyRecord], objStreamFromFile)
-  }
-
-  Console.println("All Records From Avro Data File Correspond To The Originals?: " + objStreamFromFile.corresponds[MyRecord](myRecordStream)((i, j) => (i == j)))
+//Verify Records are Equal
+  println("All Records From Avro Data File Same As The Originals?: " + (sameRecordIterator sameElements myRecordIterator2))
 }
