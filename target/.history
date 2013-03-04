@@ -5,3 +5,5 @@ exit
 inspect test:full-classpath
 ~run
 exit
+run
+exit
