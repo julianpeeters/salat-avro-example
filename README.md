@@ -3,6 +3,18 @@ salat-avro-example: Streaming records to and from Avro Datafiles with `Iterator`
 
 In order to stream records to an avro file that can be read by an avro datafilereader, we need to provide record model, a destination file, and a stream of records. `serializeIteratorToDataFile` appends indiscriminately.  If there is no file, a file is created.  To deserialize from file we will need to provide an infile.
 
+      //Serialize to an Avro DataFile
+        val myRecordIterator = Iterator[MyRecord](myRecord1, myRecord2, myRecord3)
+        val outfile = new File("/home/julianpeeters/streamOut.avro")
+        
+        grater[MyRecord].serializeIteratorToDataFile(outfile, myRecordIterator)
+        
+      //Deserialize from File: Read DataFile and deserialize back to object 
+        val streamInfile = new File("/home/julianpeeters/streamIn.avro")
+        
+        val sameRecordIterator = grater[MyRecord].asObjectIteratorFromDataFile(streamInfile)
+
+
 ###For other examples, please see each branch:###
 
 <a href = https://github.com/julianpeeters/salat-avro-example/tree/salat>salat example</a> - The stock example, to and from DAO
