@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ##salat-avro-example##
 
 Simple examples of these tools: <a href = http://github.com/novus/salat>salat</a> and <a href = https://github.com/T8Webware/salat-avro>salat-avro</a>
@@ -61,4 +60,3 @@ To use these examples, you must use Salat-Avro version 0.0.8-archive in the Sala
 <a href = https://github.com/julianpeeters/salat-avro-example/tree/stream-to-and-from-fileouputstream>salat-avro example: Stream Records to/from Fileoutstream</a> -- Create a `Stream` from a file by `cons`-ing recursively on a datasource. Non-canonical transport across the wire, requires extra `Stream` method in `AvroGrater.scala`, and therefore was those methods were removed from my fork's 'master' branch of Salat-Avro.
 
 <a href = https://github.com/julianpeeters/salat-avro-example/tree/stream-to-and-from-avro-datafile>salat-avro example: Stream Records to/from Avro Datafile</a> -- Serialize/Deserialize records from `Stream[Record]` to an Avro Datafile and back again.  Immutable scala `Stream`s seem like the natural data structure for the language, but, even defined with `def`, I'm worried that de/serialization will cause memory issues. I need to test it with a large file, but since a `Stream` an always be had from an `Iterator`, and an `Iterator` seems more memory-safe, I decided to use the iterator version, removing the `Stream` methods from `AvroGrater.scala`.
->>>>>>> 28e1b670fb4977148de1d617caaaae8a09f88e5d
