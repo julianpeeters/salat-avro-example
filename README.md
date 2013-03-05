@@ -1,7 +1,16 @@
 salat example
 ==================
 
-The canonical <a href = http://github.com/novus/salat>salat</a> example.
+The canonical <a href = http://github.com/novus/salat>salat</a> example:
+
+        val greeting = "Hello World!" 
+          Console.println(greeting) 
+
+        val a = Record(greeting)
+          Console.println(a)
+
+        val dbo = grater[Record].asDBObject(a)
+          Console.println(dbo)
 
 ###For other examples, please see each branch:###
 
