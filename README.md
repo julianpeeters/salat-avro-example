@@ -8,6 +8,7 @@ Simple Examples of these tools:
 <a href = https://github.com/T8Webware/salat-avro>salat-avro</a>
 
 Please see the example in each branch:
+--------------------------------------
 
 <a href = https://github.com/julianpeeters/salat-avro-example/tree/salat>salat example</a> - The stock example, to and from DAO
 
